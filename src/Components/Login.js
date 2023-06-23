@@ -1,8 +1,11 @@
 
-import React, {useState} from "react";
+import React, {useState,useContext} from "react";
 import userApis from "../apis/userApis";
+import authContext from "../context/authContext";
+import {useNavigate} from "react-router-dom";
 
-const Login = () => {
+
+const Login = (props) => {
 
     let [loggedInUser, setLoggedInUser] = useState({
         email: "",
@@ -10,6 +13,10 @@ const Login = () => {
     })
 
     let [error, setError] = useState("")
+
+    let {token,setToken} = useContext(authContext);
+
+    const navigate = useNavigate();
 
 
 
@@ -23,7 +30,13 @@ const Login = () => {
             // make a post request to login the user
 
             userApis.post("/auth/login", loggedInUser)
-            .then((res) => console.log(res.data))
+            .then((res) => {
+                console.log(res.data)
+                setToken(res.data.data.token)
+                navigate("/secret")
+
+
+            })
             .catch((err) => console.log(err))
 
     }
@@ -44,6 +57,7 @@ const Login = () => {
                           <button type="submit"  onClick={handleLogin}>Login</button>
 
                 </form>
+                {props.children}
         </div>
     )
 }

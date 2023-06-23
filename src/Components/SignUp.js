@@ -1,5 +1,6 @@
 import React,{useState} from "react"; 
 import userApis from "../apis/userApis";
+import {useNavigate} from "react-router-dom";
 
 const SignUp = () => {
 
@@ -12,6 +13,8 @@ const SignUp = () => {
 
     const [error, setError] = useState("")
 
+    const navigate = useNavigate();
+
     // console.log(formData);
 
     async function handleSignup(e){
@@ -21,9 +24,16 @@ const SignUp = () => {
           return setError("Please fill all the fields")
         }
         // password and conform passwor dshould be same
+        try{
         const userResponse = await userApis.post("/auth/signup", formData)
-
-        console.log(userResponse.data.data);
+        console.log(userResponse);
+         alert("User created successfully")
+            navigate("/login")
+        }
+        catch(err){
+             console.log("There was an error")
+        }
+   
 
     }
 
