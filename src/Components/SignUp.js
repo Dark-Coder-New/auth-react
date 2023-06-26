@@ -12,6 +12,7 @@ const SignUp = () => {
     })
 
     const [error, setError] = useState("")
+    const [success, setSuccess] = useState("")
 
     const navigate = useNavigate();
 
@@ -21,17 +22,23 @@ const SignUp = () => {
         e.preventDefault();
 
         if(!formData.name || !formData.email || !formData.password || !formData.confirmPassword){
+            setSuccess("")
           return setError("Please fill all the fields")
         }
         // password and conform passwor dshould be same
         try{
-        const userResponse = await userApis.post("/auth/signup", formData)
-        console.log(userResponse);
-         alert("User created successfully")
-            navigate("/login")
+          const userResponse = await userApis.post("/auth/signup", formData)
+          console.log(userResponse);
+          setError("")
+          setSuccess(userResponse.data.message)
+          alert("User created successfully")
+          navigate("/login")
         }
         catch(err){
-             console.log("There was an error")
+             console.log(err);
+             console.log(err.response)
+             setSuccess("")
+             setError(err.response.data.error)
         }
    
 
@@ -56,7 +63,14 @@ const SignUp = () => {
                         onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
                      />
                      <button type="submit">Sign Up</button>
+
               </form>
+              {
+                success && <p>{success}</p>
+              }
+              {
+                error && <p>{error}</p>
+              }
         </div>
     )
 }
